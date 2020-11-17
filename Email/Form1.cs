@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Napier_Bank_Coursework
+namespace Email
 {
     public partial class Form1 : Form
     {

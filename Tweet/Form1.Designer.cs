@@ -1,4 +1,4 @@
-﻿namespace Napier_Bank_Coursework
+﻿namespace Tweet
 {
     partial class Form1
     {
