@@ -14,9 +14,6 @@ namespace Napier_Bank_Coursework
         private IDictionary<String, int> mentionList = new Dictionary<string, int>();
         private IDictionary<String, int> trendingList = new Dictionary<string, int>();
 
-        private string embeddedTextSpeak;
-        private string filePath;
-
         private static Singleton instance = null;
 
  

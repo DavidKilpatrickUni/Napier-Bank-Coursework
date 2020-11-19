@@ -18,11 +18,14 @@ namespace Napier_Bank_Coursework
         }
         public SMS(string messageID, string sender, string message)
         {
+       
             base.setMessageType(messageType);
             base.setMessageID(messageID);
             base.setSender(sender);
             base.setMessage(message);
         }
+
+    
 
     }
 }

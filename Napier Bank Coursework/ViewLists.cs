@@ -37,25 +37,25 @@ namespace Napier_Bank_Coursework
             quarantinedList = Singleton.Instance.getQuarantinedList();
             foreach (var site in quarantinedList)
             {
-                lstURL.Items.Add(site.Key + "   Blocked: " + site.Value + " times");
+                lstURL.Items.Add(site.Key + "   Blocked: " + site.Value + " time(s)");
             }
 
             trendingList = Singleton.Instance.getTrendingList();
             foreach (var hashTag in trendingList)
             {
-                lstHastags.Items.Add(hashTag.Key + "   Trending: "+ hashTag.Value + " times");
+                lstHastags.Items.Add(hashTag.Key + "   Trending: "+ hashTag.Value + " time(s)");
             }
 
             SIRList = Singleton.Instance.getSIRList();
             foreach (var bank in SIRList)
             {
-                lstSIR.Items.Add(bank.Key + "   Reported: " + bank.Value + " times");
+                lstSIR.Items.Add(bank.Key + "   Reported: " + bank.Value + " time(s)");
             }
 
             mentionList = Singleton.Instance.getMentionList();
             foreach (var person in mentionList)
             {
-                lstMentions.Items.Add(person.Key + "   Mentioned: " + person.Value + " times");
+                lstMentions.Items.Add(person.Key + "   Mentioned: " + person.Value + " time(s)");
             }
 
         }

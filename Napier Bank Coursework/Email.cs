@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,8 @@ namespace Napier_Bank_Coursework
     {
 
         readonly string messageType = "Email";
+
+        [JsonProperty]
         private string subject;
 
 

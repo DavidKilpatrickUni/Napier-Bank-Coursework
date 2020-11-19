@@ -48,7 +48,7 @@ namespace Napier_Bank_Coursework
         {
             this.Hide();
             Send sendScreen = new Send(this);
-            sendScreen.ShowDialog(this);
+            sendScreen.Show();
         }
     }
 }
