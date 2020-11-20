@@ -70,6 +70,17 @@ namespace Napier_Bank_Coursework
 
 
         }
-      
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Exit Program", buttons);
+            if (result == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
+        }
+
+    
     }
 }

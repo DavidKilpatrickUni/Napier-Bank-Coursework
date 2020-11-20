@@ -1,5 +1,4 @@
 ﻿using LumenWorks.Framework.IO.Csv;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,71 +7,157 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Napier_Bank_Coursework
 {
-    public partial class Send : Form
-
-       
+    public partial class Read : Form
     {
 
         private Home homePage;
 
-        private string messageID;
-        private string messageType;
+        string path;
+        string[] lines;
+        int firstLine;
+        int lastLine;
+        int count;
 
-        
+        string messageID;
+        string messageBody;
 
 
-
-
-
-        public Send(Home homePage)
+        public Read(Home homePage)
         {
             InitializeComponent();
+
             this.homePage = homePage;
         }
 
-        private void btnHome_Click(object sender, EventArgs e)
+        private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
-          
-            this.Close();
-            homePage.Show();
         }
 
-        private void btnSend_Click(object sender, EventArgs e)
+        private void Read_Load(object sender, EventArgs e)
         {
-            clearReceivedMessage();
+            /*
+            string path = @"C:\Users\Random\Desktop\Uni - Software Engineering\bankData.txt";
+            TextReader tr = new StreamReader(path);
+            string readText = tr.ReadToEnd();
+            tr.Close();
+            textBox1.Text = readText;
+            */
 
-            messageID = txtMessageHeader.Text.ToUpper();
-
-            if(!Helper.processHeader(messageID))
+            /*
+            var csvTable = new DataTable();
+            using (var csvReader = new CsvReader(new StreamReader(System.IO.File.OpenRead(@"C:\Users\Random\Desktop\Uni - Software Engineering\bankData.txt")), true))
             {
-                return;
+                csvTable.Load(csvReader);
+
+                textBox1.Text = csvTable.ToString();
             }
+            */
 
-            messageType = Helper.getHeaderType(messageID);
 
-            if (messageType != "S" && messageType != "E" && messageType != "T")
-            {
-                return;
-            }
+            
 
-            processMessageBody(messageType,messageID, txtMessageBody.Text);
-        
+         
         }
 
-     
-   
+        private void btnNext_Click(object sender, EventArgs e)
+        {
 
-     
+            if (count < lastLine - 1)
+            {
+                txtField1.Clear();
 
-    
+                count = count + 1;
+               
+                messageID = lines[count].Substring(0, lines[count].IndexOf(" ")).ToUpper();
+                messageBody = lines[count].Remove(0, lines[count].IndexOf(" ") + 1);
+
+                txtHeader.Text = messageID;
+                txtMessageBody.Text = messageBody;
+
+                txtRecordCount.Text = (count).ToString();
+                txtRecordTotal.Text = (lastLine-1).ToString();
+
+                string messageType;
+
+                if (!Helper.processHeader(messageID))
+                {
+                    return;
+                }
+
+                messageType = Helper.getHeaderType(messageID);
+
+                if (messageType != "S" && messageType != "E" && messageType != "T")
+                {
+                    return;
+                }
+
+                txtField1.Text = messageID;
+
+                processMessageBody(messageType, messageID, txtMessageBody.Text);
+            }
+            else
+                {
+                MessageBox.Show("No further messages");
+            }
+        }
+
+      
+
+        private void btnOpen_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog
+            {
+                InitialDirectory = @"C:\Users\Random\Desktop\Uni - Software Engineering",
+                Title = " Browse Text Files",
+
+                CheckFileExists = true,
+                CheckPathExists = true,
+
+                DefaultExt = "txt",
+                Filter = "txt files (*.txt)|*.txt",
+                FilterIndex = 2,
+                RestoreDirectory = true,
+
+                ReadOnlyChecked = true,
+                ShowReadOnly = true
+
+            };
+
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                path = openFileDialog1.FileName;
+
+                lines = File.ReadAllLines(path);
+
+                count = -1;
+
+                lastLine = lines.Length;
+                firstLine = 0;
+
+                txtFilePath.Text = path;
+                //foreach(var record in lines)
+                //{
+
+                //messageID = lines[.Substring(0, 10);
+                // messageBody = record.Remove(0, 11);
+
+
+
+                //}
+
+
+
+            }
+        }
+
+
 
         private void processMessageBody(string messageType, string messageID, string messageBody)
         {
@@ -95,15 +180,15 @@ namespace Napier_Bank_Coursework
                     }
 
                     sender = Helper.getSender(messageBody);
- 
-                    if(!Helper.checkMessageText(messageBody, 1, 140))
+
+                    if (!Helper.checkMessageText(messageBody, 1, 140))
                     {
-                       
+
                         return;
                     }
 
                     messageText = Helper.getMessageText(messageBody);
-                 
+
                     SMS sms = new SMS(messageID, sender, messageText);
 
                     Helper.createJSONSMS(sms);
@@ -120,7 +205,7 @@ namespace Napier_Bank_Coursework
 
                     if (!Helper.checkSenderLength(messageBody, 2, 15))
                     {
-                       
+                        
                         return;
                     }
 
@@ -128,29 +213,29 @@ namespace Napier_Bank_Coursework
 
                     if (!Helper.checkSenderSymbol(sender))
                     {
-                       
+                        
                         return;
                     }
 
                     if (!Helper.checkMessageText(messageBody, 1, 140))
                     {
-                
+                     
                         return;
                     }
 
                     messageText = Helper.getMessageText(messageBody);
 
                     Helper.findHashTags(messageText);
-                    displayHashtags = Helper.displayHashTags(messageText);
+                    //displayHashtags = Helper.displayHashTags(messageText);
 
                     Helper.findMentions(messageText);
-                    displayMentions = Helper.displayMentions(messageText);
+                    //displayMentions = Helper.displayMentions(messageText);
 
                     Tweet tweet = new Tweet(messageID, sender, messageText);
 
                     Helper.createJSONTweet(tweet);
 
-                    displayTweet(tweet,displayHashtags,displayMentions);
+                    displayTweet(tweet);
 
                     break;
 
@@ -191,8 +276,8 @@ namespace Napier_Bank_Coursework
 
                     if (!Helper.checkForSIR(subject))
                     {
-              
-                        
+
+
                         sender = Helper.getSender(messageBody);
 
                         messageText = Helper.getMessageText(messageBody);
@@ -204,7 +289,7 @@ namespace Napier_Bank_Coursework
 
                         Helper.createJSONEmail(email);
 
-                        displayEmail(email, displayWebsites, SIRRecord);
+                        //displayEmail(email, displayWebsites, SIRRecord);
                     }
                     else
                     {
@@ -213,11 +298,11 @@ namespace Napier_Bank_Coursework
 
                         string sortCode;
 
-            
+
 
                         if (!Helper.checkSIRFormat(subject))
                         {
-                            MessageBox.Show("Wrong SIR Format:","Error");
+                            MessageBox.Show("Wrong SIR Format:", "Error");
                             return;
 
                         }
@@ -226,7 +311,7 @@ namespace Napier_Bank_Coursework
                         {
                             MessageBox.Show("No Sort Code:", "Error");
                             return;
-         
+
                         }
 
                         if (!Helper.checkSortCodeLength(messageBody))
@@ -262,47 +347,40 @@ namespace Napier_Bank_Coursework
 
                         SIRRecord = sortCode + " " + natureOfIncident;
 
-                       
+
 
 
                         displayWebsites = Helper.displayWebsites(messageText);
                         messageText = Helper.findWebsites(messageText);
 
                         Helper.addSIRRecord(SIRRecord);
-                       
+
 
                         Email email = new Email(messageID, sender, subject, sortCode, natureOfIncident, messageText);
 
                         Helper.createJSONEmail(email);
 
-                        displayEmail(email, displayWebsites, SIRRecord);
+                        //displayEmail(email, displayWebsites, SIRRecord);
 
 
                     }
-         
+
 
                     break;
 
 
                 default:
 
-                   
-                    
+
+
                     break;
 
             }
         }
 
-       
-
-       
-
-      
-
-      
         private void displaySMS(SMS sms)
         {
-            clearReceivedMessage();
+            
             txtField1.Text = sms.getMessageType();
             txtField2.Text = sms.getMessageID();
             txtField3.Text = sms.getSender();
@@ -315,25 +393,17 @@ namespace Napier_Bank_Coursework
             lblField6.Visible = false;
             txtField6.Visible = false;
 
+            MessageBox.Show("SMS created sucessfully", "Success");
         }
 
-        private void displayTweet(Tweet tweet, IDictionary<String, int> hashTagsList, IDictionary<String, int> MentionsList)
+        private void displayTweet(Tweet tweet)
         {
-            clearReceivedMessage();
+            
             txtField1.Text = tweet.getMessageType();
             txtField2.Text = tweet.getMessageID();
             txtField3.Text = tweet.getSender();
             txtMessageBox.Text = tweet.getMessage();
 
-            foreach (var hashTag in hashTagsList)
-            {
-                listBox1.Items.Add(hashTag.Key + "   Trending: " + hashTag.Value + " time(s)");
-            }
-
-            foreach (var mention in MentionsList)
-            {
-                listBox2.Items.Add(mention.Key + "   Mentioned: " + mention.Value + " time(s)");
-            }
 
             lblField4.Visible = false;
             txtField4.Visible = false;
@@ -343,105 +413,13 @@ namespace Napier_Bank_Coursework
             txtField6.Visible = false;
         }
 
-        private void displayEmail(Email email, IDictionary<String, int> WebsitesList, string SIRRecord)
+        private void btnHome_Click(object sender, EventArgs e)
         {
-            clearReceivedMessage();
-            txtField1.Text = email.getMessageType();
-            txtField2.Text = email.getMessageID();
-            txtField3.Text = email.getSender();
-            txtField4.Text = email.getSubject();
-
-            txtField5.Text = email.getSortCode();
-            txtField6.Text = email.getNatureOfIncident();
-
-            txtMessageBox.Text = email.getMessage();
-
-            foreach (var site in WebsitesList)
-            {
-                listBox1.Items.Add(site.Key + "   Blocked: " + site.Value + " time(s)");
-            }
-
-            if (SIRRecord != "")
-            {
-                listBox2.Items.Add(SIRRecord + "   Reported: 1 time");
-            }
-           
-
-
+            this.Close();
+            homePage.Show();
         }
 
-        private void btnClear_Click(object sender, EventArgs e)
-        {
-            
-
-            txtMessageHeader.Clear();
-            txtMessageBody.Clear();
-
-            txtMessageBox.Clear();
-            txtField1.Clear();
-            txtField2.Clear();
-            txtField3.Clear();
-            txtField4.Clear();
-            txtField5.Clear();
-            txtField6.Clear();
-            listBox1.Items.Clear();
-            listBox2.Items.Clear();
-
-            lblField4.Visible = true;
-            txtField4.Visible = true;
-            lblField5.Visible = true;
-            txtField5.Visible = true; 
-            lblField6.Visible = true;
-            txtField6.Visible = true;
-        }
-
-        private void btnClearMessage_Click(object sender, EventArgs e)
-        {
-            txtMessageHeader.Clear();
-            txtMessageBody.Clear();
-        }
-        private void clearReceivedMessage()
-        {
-            txtMessageBox.Clear();
-            txtField1.Clear();
-            txtField2.Clear();
-            txtField3.Clear();
-            txtField4.Clear();
-            txtField5.Clear();
-            txtField6.Clear();
-            listBox1.Items.Clear();
-            listBox2.Items.Clear();
-
-            lblField4.Visible = true;
-            txtField4.Visible = true;
-            lblField5.Visible = true;
-            txtField5.Visible = true;
-            lblField6.Visible = true;
-            txtField6.Visible = true;
-        }
-
-        private void clearAll()
-        {
-
-            txtMessageHeader.Clear();
-            txtMessageBody.Clear();
-            txtMessageBox.Clear();
-            txtField1.Clear();
-            txtField2.Clear();
-            txtField3.Clear();
-            txtField4.Clear();
-            txtField5.Clear();
-            txtField6.Clear();
-            listBox1.Items.Clear();
-            listBox2.Items.Clear();
-
-            lblField4.Visible = true;
-            txtField4.Visible = true;
-            lblField5.Visible = true;
-            txtField5.Visible = true;
-            lblField6.Visible = true;
-            txtField6.Visible = true;
-        }
+   
 
         private void btnExit_Click(object sender, EventArgs e)
         {
@@ -451,12 +429,6 @@ namespace Napier_Bank_Coursework
             {
                 Application.Exit();
             }
-
-
-
-            
         }
-
-     
     }
 }

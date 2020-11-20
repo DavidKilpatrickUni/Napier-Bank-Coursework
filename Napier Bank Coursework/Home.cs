@@ -32,16 +32,21 @@ namespace Napier_Bank_Coursework
 
         private void btnExit_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Exit Program", buttons);
+            if (result == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            int value;
-            if (Singleton.Instance.getMentionList().TryGetValue("@Student", out value))
-            {
-                Singleton.Instance.getMentionList()["@Student"] = value + 1;
-            }
+         
+            
+            this.Hide();
+            Read readScreen = new Read(this);
+            readScreen.Show();
         }
 
         private void btnSend_Click(object sender, EventArgs e)
@@ -50,5 +55,14 @@ namespace Napier_Bank_Coursework
             Send sendScreen = new Send(this);
             sendScreen.Show();
         }
+
+     
+
+        private void Home_Load(object sender, EventArgs e)
+        {
+
+        }
+
+      
     }
 }

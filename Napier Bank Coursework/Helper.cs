@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Napier_Bank_Coursework
 {
@@ -16,17 +17,45 @@ namespace Napier_Bank_Coursework
     {
         readonly static string filePath = @"C:\Users\Random\Desktop\Uni - Software Engineering\Bank.json";
 
-       
+        public static bool processHeader(string messageID)
+        {
+            bool checkComplete;
+
+            checkComplete = false;
+
+            if (!Helper.checkHeaderLength(messageID))
+            {
+                
+                return checkComplete;
+            }
+
+            if (!Helper.checkHeaderNumeric(messageID))
+            {
+
+                return checkComplete;
+            }
+
+            checkComplete = true;
+
+            return checkComplete;
+        
+
+        }
+
+  
+
         public static bool isNumeric(string inputString)
         {
 
-            int numberOutput;
+            Int64 numberOutput;
             bool result;
             
 
             numberOutput = 0;
 
-            result = int.TryParse(inputString, out numberOutput);
+            result = Int64.TryParse(inputString, out numberOutput);
+
+
 
             return result;
         }
@@ -39,10 +68,13 @@ namespace Napier_Bank_Coursework
 
             result = true;
 
+           
+
             if (header.Length != 10)
             {
+                MessageBox.Show("Invalid Message Header (MessageID Must Be 10 Characters)", "Error");
                 result = false;
-               
+                
             }
 
             return result;
@@ -192,6 +224,7 @@ namespace Napier_Bank_Coursework
 
             if (lengthOfSender < minLength || lengthOfSender > maxLength)
             {
+                MessageBox.Show("Invalid Sender (Check Rules For MessageType)", "Error");
                 return false;
             }
 
@@ -225,6 +258,8 @@ namespace Napier_Bank_Coursework
 
             if (!Helper.isNumeric(returnSender))
             {
+                Console.WriteLine(returnSender);
+                MessageBox.Show("Invalid Sender (Phone Number Should Only Contain Digits)", "Error");
                 return false;
             }
 
@@ -236,6 +271,7 @@ namespace Napier_Bank_Coursework
         {
             if (!sender.Contains("@"))
             {
+                MessageBox.Show("Invalid TwitterID (Does Not Conatain A @ Symbol)", "Error");
                 return false;
             }
 
@@ -256,6 +292,7 @@ namespace Napier_Bank_Coursework
 
             if (!emailFound)
             {
+             
                 return false;
             }
 
@@ -290,7 +327,7 @@ namespace Napier_Bank_Coursework
 
             
 
-            if (firstIndexSubject < firstIndexMessage)
+            if (firstIndexSubject < firstIndexMessage && firstIndexSubject > 0)
             {
                 firstIndexCompare = firstIndexSubject;
             }
@@ -398,7 +435,255 @@ namespace Napier_Bank_Coursework
 
             return returnSubject;
         }
+        public static bool checkForSIR(string messageSubject)
+        {
 
+            string findSir;
+
+            findSir = "SIR";
+
+            if (messageSubject.Contains(findSir))
+            { 
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool checkSIRFormat(string messageSubject)
+        {
+            DateTime dateTime;
+            bool correctFormat;
+     
+            string date;
+
+           
+
+            date = messageSubject.Remove(0,4);
+
+            Console.WriteLine(date);
+
+            correctFormat = DateTime.TryParse(date, out dateTime);
+
+            if (correctFormat)
+            {
+                return true;
+            }
+
+            return false;
+
+        }
+
+        public static bool checkForSortCode(string messageBody)
+        {
+            string findSortCode;
+
+            int firstIndexSortCode;
+
+            int messageBodyLength;
+
+            findSortCode = "Sort Code:";
+
+            messageBodyLength = messageBody.Length;
+        
+
+            firstIndexSortCode = messageBody.IndexOf(findSortCode);
+
+
+            if (firstIndexSortCode < messageBodyLength && firstIndexSortCode > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool checkSortCodeLength(string messageBody)
+        {
+            string findSortCode;
+            string findNatureOfIncident;
+
+            int firstIndexSortCode;
+            int firstIndexNatureOfIncident;
+
+            int lengthOfSortCode;
+            
+
+            findSortCode = "Sort Code:";
+            findNatureOfIncident = "Nature Of Incident:";
+
+            firstIndexSortCode = messageBody.IndexOf(findSortCode);
+            firstIndexNatureOfIncident = messageBody.IndexOf(findNatureOfIncident);
+
+            lengthOfSortCode = (firstIndexNatureOfIncident - (firstIndexSortCode + 12));
+
+            if (lengthOfSortCode != 8)
+            {
+                Console.WriteLine(lengthOfSortCode);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool checkSortCodeFormat(string messageBody)
+        {
+            string findSortCode;
+
+         
+
+            int firstIndexSortCode;
+
+
+
+
+            int lengthOfSortCode;
+
+            string returnSortCode;
+
+            bool correctFormat;
+
+
+            findSortCode = "Sort Code:";
+
+ 
+
+            firstIndexSortCode = messageBody.IndexOf(findSortCode);
+
+            
+
+
+            lengthOfSortCode = 8;
+
+            returnSortCode = messageBody.Substring(firstIndexSortCode + 11, lengthOfSortCode);
+            Console.WriteLine(returnSortCode);
+
+            correctFormat = Regex.IsMatch(returnSortCode, @"[0-9][0-9]\-[0-9][0-9]\-[0-9][0-9]");
+
+            if (correctFormat)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static string getSortCode(string messageBody)
+        {
+            string findSortCode;
+
+            int firstIndexSortCode;
+
+            int lengthOfSortCode;
+
+            string returnSortCode;
+
+
+            findSortCode = "Sort Code:";
+
+            firstIndexSortCode = messageBody.IndexOf(findSortCode);
+
+            lengthOfSortCode = 8;
+
+            returnSortCode = messageBody.Substring(firstIndexSortCode + 11, lengthOfSortCode);
+
+            return returnSortCode;
+        }
+
+        public static bool checkForNatureOfIncident(string messageBody)
+        {
+            string findNatureOfIncident;
+
+        
+
+            int firstIndexNatureOfIncident;
+            int messageBodyLength;
+
+
+            findNatureOfIncident = "Nature Of Incident:";
+            messageBodyLength = messageBody.Length;
+
+
+            firstIndexNatureOfIncident = messageBody.IndexOf(findNatureOfIncident);
+
+          
+
+
+
+            if (firstIndexNatureOfIncident < messageBodyLength && firstIndexNatureOfIncident > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        public static bool checkNatureOfIncident(string messageBody)
+        {
+            string findNatureOfIncident;
+
+            int firstIndexNatureOfIncident;
+
+            int lengthOfNatureOfIncident;
+
+            string returnNatureOfIncident;
+
+            findNatureOfIncident = "Nature Of Incident:";
+
+            firstIndexNatureOfIncident = messageBody.IndexOf(findNatureOfIncident);
+
+            lengthOfNatureOfIncident = 10;
+
+            returnNatureOfIncident = (messageBody.Substring(firstIndexNatureOfIncident + 20, lengthOfNatureOfIncident));
+
+            string[] typesOfIncidentList = { "Theft", "Raid", "Bomb" };
+
+
+            for (int i = 0; i < typesOfIncidentList.Length; i++)
+            {
+                if (returnNatureOfIncident.Contains(typesOfIncidentList[i]))
+                {
+                    //MessageBox.Show("nature of incident: " + typesOfIncidentList[i]);
+                    returnNatureOfIncident = typesOfIncidentList[i];
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        public static string getNatureOfIncident(string messageBody)
+        {
+            string findNatureOfIncident;
+
+
+            int firstIndexNatureOfIncident;
+
+
+            int lengthOfNatureOfIncident;
+
+            string returnNatureOfIncident;
+
+            findNatureOfIncident = "Nature Of Incident:";
+
+            firstIndexNatureOfIncident = messageBody.IndexOf(findNatureOfIncident);
+
+            lengthOfNatureOfIncident = 10;
+
+            returnNatureOfIncident = (messageBody.Substring(firstIndexNatureOfIncident + 20, lengthOfNatureOfIncident));
+
+            string[] typesOfIncidentList = { "Theft", "Raid", "Bomb" };
+
+
+            for (int i = 0; i < typesOfIncidentList.Length; i++)
+            {
+                if (returnNatureOfIncident.Contains(typesOfIncidentList[i]))
+                {
+                    //MessageBox.Show("nature of incident: " + typesOfIncidentList[i]);
+                    returnNatureOfIncident = typesOfIncidentList[i];
+
+                }
+            }
+
+            return returnNatureOfIncident;
+        }
 
 
         public static bool checkMessageText(string messageBody, int minLength, int maxLength)
@@ -425,6 +710,7 @@ namespace Napier_Bank_Coursework
 
             if (lengthOfMessageText < minLength || lengthOfMessageText > maxLength)
             {
+                MessageBox.Show("Invalid Message Text Length (Message Text Must Be Less Than " + maxLength + " Characters", "Error");
                 return false;
             }
 
@@ -462,6 +748,36 @@ namespace Napier_Bank_Coursework
 
         }
 
+        public static string getRemainingMessageText(string messageBody)
+        {
+
+            string findNatureOfIncident;
+
+
+            int firstIndexNatureOfIncident;
+
+            int lengthOfBody;
+            int lengthOfRemainingMessageText;
+
+            string returnRemainingMessageText;
+
+
+            findNatureOfIncident = "Nature Of Incident:";
+
+            firstIndexNatureOfIncident = messageBody.IndexOf(findNatureOfIncident);
+
+            lengthOfBody = messageBody.Length + 1;
+
+            lengthOfRemainingMessageText = lengthOfBody - (firstIndexNatureOfIncident + 26);
+
+            returnRemainingMessageText = messageBody.Substring(firstIndexNatureOfIncident + 25, lengthOfRemainingMessageText);
+
+            returnRemainingMessageText = Helper.textSpeakConverter(returnRemainingMessageText);
+
+            return returnRemainingMessageText;
+
+        }
+
         public static string getHeaderType(string header)
         {
             string firstLetter;
@@ -482,7 +798,7 @@ namespace Napier_Bank_Coursework
 
 
                 default:
-                    
+                    MessageBox.Show("Invalid Message Type (Not SMS,Tweet or Email)", "Error");
                     return null;
 
             }
@@ -499,6 +815,11 @@ namespace Napier_Bank_Coursework
             numberOutput = 0;
 
             result = int.TryParse(remainingtLetters, out numberOutput);
+
+            if (!result)
+            {
+                MessageBox.Show("Invalid Message Type (Not numeric characters)", "Error");
+            }
 
             return result;
 
@@ -667,6 +988,29 @@ namespace Napier_Bank_Coursework
             }
             return displayWebsiteList;
 
+        }
+
+        public static void addSIRRecord(string SIRRecord)
+        {
+            IDictionary<String, int> SIRList = Singleton.Instance.getSIRList();
+
+            
+
+                if (!SIRList.ContainsKey(SIRRecord.ToString()))
+                {
+                    SIRList.Add(SIRRecord.ToString(), 1);
+                }
+                else
+                {
+                    int count;
+
+                    if (SIRList.TryGetValue(SIRRecord.ToString(), out count))
+                    {
+                        SIRList[SIRRecord.ToString()] = count + 1;
+                    }
+                }
+
+            
         }
 
 

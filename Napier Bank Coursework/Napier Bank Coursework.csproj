@@ -65,11 +65,11 @@
     <Compile Include="Message.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Received.cs">
+    <Compile Include="Read.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Received.Designer.cs">
-      <DependentUpon>Received.cs</DependentUpon>
+    <Compile Include="Read.Designer.cs">
+      <DependentUpon>Read.cs</DependentUpon>
     </Compile>
     <Compile Include="Send.cs">
       <SubType>Form</SubType>
@@ -97,9 +97,10 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Received.resx">
-      <DependentUpon>Received.cs</DependentUpon>
+    <EmbeddedResource Include="Read.resx">
+      <DependentUpon>Read.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Send.resx">
       <DependentUpon>Send.cs</DependentUpon>
@@ -120,6 +121,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\NapierTriangle.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
