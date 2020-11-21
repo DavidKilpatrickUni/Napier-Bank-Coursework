@@ -68,7 +68,6 @@
             this.txtHeader.Name = "txtHeader";
             this.txtHeader.Size = new System.Drawing.Size(450, 20);
             this.txtHeader.TabIndex = 0;
-            this.txtHeader.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // btnNext
             // 
@@ -284,7 +283,7 @@
             // 
             this.lblSubTitleMessageDetails.AutoSize = true;
             this.lblSubTitleMessageDetails.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSubTitleMessageDetails.Location = new System.Drawing.Point(784, 70);
+            this.lblSubTitleMessageDetails.Location = new System.Drawing.Point(680, 70);
             this.lblSubTitleMessageDetails.Name = "lblSubTitleMessageDetails";
             this.lblSubTitleMessageDetails.Size = new System.Drawing.Size(147, 24);
             this.lblSubTitleMessageDetails.TabIndex = 26;
@@ -371,7 +370,6 @@
             this.Controls.Add(this.txtHeader);
             this.Name = "Read";
             this.Text = "Napier Bank - Read Text File";
-            this.Load += new System.EventHandler(this.Read_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

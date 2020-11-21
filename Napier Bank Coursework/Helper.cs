@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ namespace Napier_Bank_Coursework
 {
     class Helper
     {
-        readonly static string filePath = @"C:\Users\Random\Desktop\Uni - Software Engineering\Bank.json";
+        readonly static string filePath = @"C:\Users\Random\Desktop\Bank.json";
 
         public static bool processHeader(string messageID)
         {
@@ -38,7 +39,6 @@ namespace Napier_Bank_Coursework
             checkComplete = true;
 
             return checkComplete;
-        
 
         }
 
@@ -50,12 +50,9 @@ namespace Napier_Bank_Coursework
             Int64 numberOutput;
             bool result;
             
-
             numberOutput = 0;
 
             result = Int64.TryParse(inputString, out numberOutput);
-
-
 
             return result;
         }
@@ -90,12 +87,9 @@ namespace Napier_Bank_Coursework
                 {
                    
                     string rowData = csvTable.Rows[i][0].ToString();
-                    
-
-
+ 
                     messageText = messageText.Replace(rowData, rowData + " <" + csvTable.Rows[i][1].ToString() + ">");
 
-                    
                 }
             }
  
@@ -219,10 +213,14 @@ namespace Napier_Bank_Coursework
             firstIndexSender = messageBody.IndexOf(findSender);
             firstIndexMessage = messageBody.IndexOf(findMessage);
 
+            Console.WriteLine(firstIndexSender);
+            Console.WriteLine(firstIndexMessage);
             lengthOfBody = messageBody.Length + 1;
             lengthOfSender = firstIndexMessage - (firstIndexSender + 9);
 
-            if (lengthOfSender < minLength || lengthOfSender > maxLength)
+            Console.WriteLine(lengthOfSender);
+
+            if (lengthOfSender < minLength || lengthOfSender > maxLength )
             {
                 MessageBox.Show("Invalid Sender (Check Rules For MessageType)", "Error");
                 return false;
@@ -258,7 +256,7 @@ namespace Napier_Bank_Coursework
 
             if (!Helper.isNumeric(returnSender))
             {
-                Console.WriteLine(returnSender);
+   
                 MessageBox.Show("Invalid Sender (Phone Number Should Only Contain Digits)", "Error");
                 return false;
             }
@@ -292,7 +290,7 @@ namespace Napier_Bank_Coursework
 
             if (!emailFound)
             {
-             
+                MessageBox.Show("Invalid Email Address (Does Not Contain Email Characteristics (@ symbol, .com, .co.uk etc)", "Error");
                 return false;
             }
 
@@ -364,13 +362,14 @@ namespace Napier_Bank_Coursework
 
             firstIndexMessage = messageBody.IndexOf(findMessage);
 
-            Console.WriteLine("index: " + firstIndexSubject);
+
 
             if (firstIndexSubject < firstIndexMessage && firstIndexSubject > 0)
             {
+               
                 return true;
             }
-
+            MessageBox.Show("Invalid Email (No Subject Title)", "Error");
             return false;
         }
 
@@ -396,8 +395,9 @@ namespace Napier_Bank_Coursework
 
             lengthOfSubject = firstIndexMessage - (firstIndexSubject + 10);
 
-            if (lengthOfSubject < 1)
+            if (lengthOfSubject < 1 || lengthOfSubject > 19)
             {
+                MessageBox.Show("Invalid Email (Subject Character Count)", "Error");
                 return false;
             }
 
@@ -461,15 +461,13 @@ namespace Napier_Bank_Coursework
 
             date = messageSubject.Remove(0,4);
 
-            Console.WriteLine(date);
-
-            correctFormat = DateTime.TryParse(date, out dateTime);
+            correctFormat = DateTime.TryParseExact(date, "dd/MM/yy",null, DateTimeStyles.None, out dateTime);
 
             if (correctFormat)
             {
                 return true;
             }
-
+            MessageBox.Show("Wrong SIR Format:", "Error");
             return false;
 
         }
@@ -494,7 +492,7 @@ namespace Napier_Bank_Coursework
             {
                 return true;
             }
-
+            MessageBox.Show("No Sort Code:", "Error");
             return false;
         }
 
@@ -519,7 +517,7 @@ namespace Napier_Bank_Coursework
 
             if (lengthOfSortCode != 8)
             {
-                Console.WriteLine(lengthOfSortCode);
+                MessageBox.Show("Invalid Sort Code (Length)", "Error");
                 return false;
             }
 
@@ -556,7 +554,7 @@ namespace Napier_Bank_Coursework
             lengthOfSortCode = 8;
 
             returnSortCode = messageBody.Substring(firstIndexSortCode + 11, lengthOfSortCode);
-            Console.WriteLine(returnSortCode);
+    
 
             correctFormat = Regex.IsMatch(returnSortCode, @"[0-9][0-9]\-[0-9][0-9]\-[0-9][0-9]");
 
@@ -564,6 +562,7 @@ namespace Napier_Bank_Coursework
             {
                 return true;
             }
+            MessageBox.Show("Invalid Sort Code (Wrong Format)", "Error");
             return false;
         }
 
@@ -613,7 +612,7 @@ namespace Napier_Bank_Coursework
             {
                 return true;
             }
-
+            MessageBox.Show("No Nature Of Incident", "Error");
             return false;
         }
         public static bool checkNatureOfIncident(string messageBody)
@@ -646,7 +645,7 @@ namespace Napier_Bank_Coursework
                     return true;
                 }
             }
-
+            MessageBox.Show("No Nature Of Incident That Kind", "Error");
             return false;
         }
         public static string getNatureOfIncident(string messageBody)
@@ -710,7 +709,7 @@ namespace Napier_Bank_Coursework
 
             if (lengthOfMessageText < minLength || lengthOfMessageText > maxLength)
             {
-                MessageBox.Show("Invalid Message Text Length (Message Text Must Be Less Than " + maxLength + " Characters", "Error");
+                MessageBox.Show("Invalid Message Text Length (Message Text Must Be Greater the " + minLength + " And Less Than " + maxLength + " Characters", "Error");
                 return false;
             }
 
@@ -1014,6 +1013,12 @@ namespace Napier_Bank_Coursework
         }
 
 
+
+
+
+      
+
+     
 
 
     }

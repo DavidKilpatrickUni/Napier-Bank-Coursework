@@ -16,20 +16,11 @@ using System.Windows.Forms;
 namespace Napier_Bank_Coursework
 {
     public partial class Send : Form
-
-       
+  
     {
-
         private Home homePage;
-
         private string messageID;
         private string messageType;
-
-        
-
-
-
-
 
         public Send(Home homePage)
         {
@@ -38,11 +29,19 @@ namespace Napier_Bank_Coursework
         }
 
         private void btnHome_Click(object sender, EventArgs e)
-        {
-
-          
+        { 
             this.Close();
             homePage.Show();
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Exit Program", buttons);
+            if (result == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
         }
 
         private void btnSend_Click(object sender, EventArgs e)
@@ -64,19 +63,12 @@ namespace Napier_Bank_Coursework
             }
 
             processMessageBody(messageType,messageID, txtMessageBody.Text);
-        
         }
 
      
-   
-
-     
-
-    
 
         private void processMessageBody(string messageType, string messageID, string messageBody)
         {
-
             string sender;
             string messageText;
 
@@ -97,8 +89,7 @@ namespace Napier_Bank_Coursework
                     sender = Helper.getSender(messageBody);
  
                     if(!Helper.checkMessageText(messageBody, 1, 140))
-                    {
-                       
+                    {   
                         return;
                     }
 
@@ -112,29 +103,25 @@ namespace Napier_Bank_Coursework
 
                     break;
 
-
                 case "T":
 
                     IDictionary<String, int> displayHashtags;
                     IDictionary<String, int> displayMentions;
 
                     if (!Helper.checkSenderLength(messageBody, 2, 15))
-                    {
-                       
+                    {   
                         return;
                     }
 
                     sender = Helper.getSender(messageBody);
 
                     if (!Helper.checkSenderSymbol(sender))
-                    {
-                       
+                    {    
                         return;
                     }
 
                     if (!Helper.checkMessageText(messageBody, 1, 140))
                     {
-                
                         return;
                     }
 
@@ -154,47 +141,40 @@ namespace Napier_Bank_Coursework
 
                     break;
 
-
                 case "E":
 
                     IDictionary<String, int> displayWebsites;
+
                     string subject;
                     string SIRRecord;
+
                     SIRRecord = "";
 
                     if (!Helper.checkSenderEmail(messageBody))
                     {
-                        MessageBox.Show("Invalid Email Address (Does Not Contain Email Characteristics (@ symbol, .com, .co.uk etc)", "Error");
                         return;
                     }
 
-
                     if (!Helper.checkForSubject(messageBody))
                     {
-                        MessageBox.Show("Invalid Email (No Subject Title)", "Error");
                         return;
                     }
 
                     if (!Helper.checkSubjectLength(messageBody))
-                    {
-                        MessageBox.Show("Invalid Email (No Subject Content)", "Error");
+                    {     
                         return;
                     }
 
                     if (!Helper.checkMessageText(messageBody, 1, 1028))
-                    {
-                        MessageBox.Show("Invalid Email Length (Message Text Must Be Less Than 1028 Characters", "Error");
+                    {     
                         return;
                     }
 
                     subject = Helper.getSubject(messageBody);
 
                     if (!Helper.checkForSIR(subject))
-                    {
-              
-                        
+                    {    
                         sender = Helper.getSender(messageBody);
-
                         messageText = Helper.getMessageText(messageBody);
 
                         displayWebsites = Helper.displayWebsites(messageText);
@@ -208,51 +188,38 @@ namespace Napier_Bank_Coursework
                     }
                     else
                     {
-
                         string natureOfIncident;
-
                         string sortCode;
-
-            
 
                         if (!Helper.checkSIRFormat(subject))
                         {
-                            MessageBox.Show("Wrong SIR Format:","Error");
                             return;
-
                         }
 
                         if (!Helper.checkForSortCode(messageBody))
-                        {
-                            MessageBox.Show("No Sort Code:", "Error");
+                        { 
                             return;
-         
                         }
 
                         if (!Helper.checkSortCodeLength(messageBody))
-                        {
-                            MessageBox.Show("Invalid Sort Code (Too Short)", "Error");
+                        { 
                             return;
                         }
 
                         if (!Helper.checkSortCodeFormat(messageBody))
-                        {
-                            MessageBox.Show("Invalid Sort Code (Wrong Format)", "Error");
+                        {    
                             return;
                         }
 
                         if (!Helper.checkForNatureOfIncident(messageBody))
-                        {
-                            MessageBox.Show("No Nature Of Incident", "Error");
+                        { 
                             return;
                         }
 
                         if (!Helper.checkNatureOfIncident(messageBody))
-                        {
-                            MessageBox.Show("No Nature Of Incident That Kind", "Error");
+                        {     
                             return;
                         }
-
 
                         natureOfIncident = Helper.getNatureOfIncident(messageBody);
                         sortCode = Helper.getSortCode(messageBody);
@@ -262,44 +229,26 @@ namespace Napier_Bank_Coursework
 
                         SIRRecord = sortCode + " " + natureOfIncident;
 
-                       
-
-
                         displayWebsites = Helper.displayWebsites(messageText);
                         messageText = Helper.findWebsites(messageText);
 
                         Helper.addSIRRecord(SIRRecord);
                        
-
                         Email email = new Email(messageID, sender, subject, sortCode, natureOfIncident, messageText);
 
                         Helper.createJSONEmail(email);
 
                         displayEmail(email, displayWebsites, SIRRecord);
-
-
                     }
          
-
                     break;
-
 
                 default:
-
-                   
-                    
+       
                     break;
-
             }
         }
 
-       
-
-       
-
-      
-
-      
         private void displaySMS(SMS sms)
         {
             clearReceivedMessage();
@@ -314,7 +263,6 @@ namespace Napier_Bank_Coursework
             txtField5.Visible = false;
             lblField6.Visible = false;
             txtField6.Visible = false;
-
         }
 
         private void displayTweet(Tweet tweet, IDictionary<String, int> hashTagsList, IDictionary<String, int> MentionsList)
@@ -366,8 +314,6 @@ namespace Napier_Bank_Coursework
                 listBox2.Items.Add(SIRRecord + "   Reported: 1 time");
             }
            
-
-
         }
 
         private void btnClear_Click(object sender, EventArgs e)
@@ -443,19 +389,7 @@ namespace Napier_Bank_Coursework
             txtField6.Visible = true;
         }
 
-        private void btnExit_Click(object sender, EventArgs e)
-        {
-            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-            DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Exit Program", buttons);
-            if (result == DialogResult.Yes)
-            {
-                Application.Exit();
-            }
 
-
-
-            
-        }
 
      
     }

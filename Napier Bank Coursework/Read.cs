@@ -19,7 +19,7 @@ namespace Napier_Bank_Coursework
 
         string path;
         string[] lines;
-        int firstLine;
+     
         int lastLine;
         int count;
 
@@ -34,36 +34,7 @@ namespace Napier_Bank_Coursework
             this.homePage = homePage;
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Read_Load(object sender, EventArgs e)
-        {
-            /*
-            string path = @"C:\Users\Random\Desktop\Uni - Software Engineering\bankData.txt";
-            TextReader tr = new StreamReader(path);
-            string readText = tr.ReadToEnd();
-            tr.Close();
-            textBox1.Text = readText;
-            */
-
-            /*
-            var csvTable = new DataTable();
-            using (var csvReader = new CsvReader(new StreamReader(System.IO.File.OpenRead(@"C:\Users\Random\Desktop\Uni - Software Engineering\bankData.txt")), true))
-            {
-                csvTable.Load(csvReader);
-
-                textBox1.Text = csvTable.ToString();
-            }
-            */
-
-
-            
-
-         
-        }
+ 
 
         private void btnNext_Click(object sender, EventArgs e)
         {
@@ -139,7 +110,6 @@ namespace Napier_Bank_Coursework
                 count = -1;
 
                 lastLine = lines.Length;
-                firstLine = 0;
 
                 txtFilePath.Text = path;
                 //foreach(var record in lines)
@@ -200,9 +170,6 @@ namespace Napier_Bank_Coursework
 
                 case "T":
 
-                    IDictionary<String, int> displayHashtags;
-                    IDictionary<String, int> displayMentions;
-
                     if (!Helper.checkSenderLength(messageBody, 2, 15))
                     {
                         
@@ -226,10 +193,8 @@ namespace Napier_Bank_Coursework
                     messageText = Helper.getMessageText(messageBody);
 
                     Helper.findHashTags(messageText);
-                    //displayHashtags = Helper.displayHashTags(messageText);
-
+               
                     Helper.findMentions(messageText);
-                    //displayMentions = Helper.displayMentions(messageText);
 
                     Tweet tweet = new Tweet(messageID, sender, messageText);
 
@@ -242,33 +207,33 @@ namespace Napier_Bank_Coursework
 
                 case "E":
 
-                    IDictionary<String, int> displayWebsites;
+           
                     string subject;
                     string SIRRecord;
                     SIRRecord = "";
 
                     if (!Helper.checkSenderEmail(messageBody))
                     {
-                        MessageBox.Show("Invalid Email Address (Does Not Contain Email Characteristics (@ symbol, .com, .co.uk etc)", "Error");
+                 
                         return;
                     }
 
 
                     if (!Helper.checkForSubject(messageBody))
                     {
-                        MessageBox.Show("Invalid Email (No Subject Title)", "Error");
+                        
                         return;
                     }
 
                     if (!Helper.checkSubjectLength(messageBody))
                     {
-                        MessageBox.Show("Invalid Email (No Subject Content)", "Error");
+                        
                         return;
                     }
 
                     if (!Helper.checkMessageText(messageBody, 1, 1028))
                     {
-                        MessageBox.Show("Invalid Email Length (Message Text Must Be Less Than 1028 Characters", "Error");
+                        
                         return;
                     }
 
@@ -277,19 +242,18 @@ namespace Napier_Bank_Coursework
                     if (!Helper.checkForSIR(subject))
                     {
 
-
                         sender = Helper.getSender(messageBody);
 
                         messageText = Helper.getMessageText(messageBody);
 
-                        displayWebsites = Helper.displayWebsites(messageText);
+  
                         messageText = Helper.findWebsites(messageText);
 
                         Email email = new Email(messageID, sender, subject, messageText);
 
                         Helper.createJSONEmail(email);
 
-                        //displayEmail(email, displayWebsites, SIRRecord);
+                        displayEmail(email);
                     }
                     else
                     {
@@ -299,42 +263,41 @@ namespace Napier_Bank_Coursework
                         string sortCode;
 
 
-
                         if (!Helper.checkSIRFormat(subject))
                         {
-                            MessageBox.Show("Wrong SIR Format:", "Error");
+                            
                             return;
 
                         }
 
                         if (!Helper.checkForSortCode(messageBody))
                         {
-                            MessageBox.Show("No Sort Code:", "Error");
+                         
                             return;
 
                         }
 
                         if (!Helper.checkSortCodeLength(messageBody))
                         {
-                            MessageBox.Show("Invalid Sort Code (Too Short)", "Error");
+                           
                             return;
                         }
 
                         if (!Helper.checkSortCodeFormat(messageBody))
                         {
-                            MessageBox.Show("Invalid Sort Code (Wrong Format)", "Error");
+                           
                             return;
                         }
 
                         if (!Helper.checkForNatureOfIncident(messageBody))
                         {
-                            MessageBox.Show("No Nature Of Incident", "Error");
+                         
                             return;
                         }
 
                         if (!Helper.checkNatureOfIncident(messageBody))
                         {
-                            MessageBox.Show("No Nature Of Incident That Kind", "Error");
+                          
                             return;
                         }
 
@@ -346,11 +309,7 @@ namespace Napier_Bank_Coursework
                         messageText = Helper.getRemainingMessageText(messageBody);
 
                         SIRRecord = sortCode + " " + natureOfIncident;
-
-
-
-
-                        displayWebsites = Helper.displayWebsites(messageText);
+                      
                         messageText = Helper.findWebsites(messageText);
 
                         Helper.addSIRRecord(SIRRecord);
@@ -360,7 +319,7 @@ namespace Napier_Bank_Coursework
 
                         Helper.createJSONEmail(email);
 
-                        //displayEmail(email, displayWebsites, SIRRecord);
+                        displayEmail(email);
 
 
                     }
@@ -396,6 +355,24 @@ namespace Napier_Bank_Coursework
             MessageBox.Show("SMS created sucessfully", "Success");
         }
 
+        private void displayEmail(Email email)
+        {
+   
+            txtField1.Text = email.getMessageType();
+            txtField2.Text = email.getMessageID();
+            txtField3.Text = email.getSender();
+            txtField4.Text = email.getSubject();
+
+            txtField5.Text = email.getSortCode();
+            txtField6.Text = email.getNatureOfIncident();
+
+            txtMessageBox.Text = email.getMessage();
+
+            MessageBox.Show("Email created sucessfully", "Success");
+
+
+        }
+
         private void displayTweet(Tweet tweet)
         {
             
@@ -411,6 +388,8 @@ namespace Napier_Bank_Coursework
             txtField5.Visible = false;
             lblField6.Visible = false;
             txtField6.Visible = false;
+
+            MessageBox.Show("Tweet created sucessfully", "Success");
         }
 
         private void btnHome_Click(object sender, EventArgs e)

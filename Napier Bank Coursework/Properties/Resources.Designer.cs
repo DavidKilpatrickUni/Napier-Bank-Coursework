@@ -59,15 +59,5 @@ namespace Napier_Bank_Coursework.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap NapierTriangle {
-            get {
-                object obj = ResourceManager.GetObject("NapierTriangle", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }

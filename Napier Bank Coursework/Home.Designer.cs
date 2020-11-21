@@ -31,7 +31,7 @@
             this.btnSend = new System.Windows.Forms.Button();
             this.btnList = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnRead = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -66,15 +66,15 @@
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
-            // button1
+            // btnRead
             // 
-            this.button1.Location = new System.Drawing.Point(200, 220);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(160, 30);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Read In Test File";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnRead.Location = new System.Drawing.Point(200, 220);
+            this.btnRead.Name = "btnRead";
+            this.btnRead.Size = new System.Drawing.Size(160, 30);
+            this.btnRead.TabIndex = 1;
+            this.btnRead.Text = "Read In Test File";
+            this.btnRead.UseVisualStyleBackColor = true;
+            this.btnRead.Click += new System.EventHandler(this.btnRead_Click);
             // 
             // label1
             // 
@@ -104,14 +104,12 @@
             this.ClientSize = new System.Drawing.Size(584, 461);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnRead);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnList);
             this.Controls.Add(this.btnSend);
             this.Name = "Home";
             this.Text = "Napier Bank - Home";
-            
-            this.Load += new System.EventHandler(this.Home_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -122,7 +120,7 @@
         private System.Windows.Forms.Button btnSend;
         private System.Windows.Forms.Button btnList;
         private System.Windows.Forms.Button btnExit;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnRead;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
     }
